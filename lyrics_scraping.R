@@ -57,7 +57,7 @@ songs_table2 <- songs_table %>%
                        Song = str_squish(Song),
                        Album = str_to_lower(Album)) %>%
                 filter( !(str_detect(Song, "live|remix|version|dvd|radio edit|radio edition|remastered|medley|take [:digit:]|intro|outro|demo|\\[") | # remove live, remix, dvd songs and albums
-                          str_detect(Album, "live|best of|greatest hits|dvd|anthology|box set|collection|\\["))                    # remove live, best of, etc. albums
+                          str_detect(Album, "live|best of|essential|essentials|greatest|hits|dvd|definitive|remastered|anthology|box set|vol. [:digit:]|collection|\\["))                    # remove live, best of, etc. albums
                       ) %>%
                 mutate(Band = Band,                                                         # define Band name (extracted)
                        Year = as.integer(str_extract(Album, pattern = "[:digit:]{4}$")),    # extract Year
