@@ -141,7 +141,7 @@ print(paste0("------------------ [ ", Band, " done after ", ms(round((end_loop -
 
 # calculating FULL execution time
 end_time <- Sys.time()
-print(paste0("__________________________[ All Lyrics downloaded in: ", ms(round((end_time - start_time), 2)), " ]__________________________")) 
+print(paste0("__________________________[ All Lyrics downloaded in... ", ms(round((end_time - start_time), 2)), " ]__________________________")) 
 
 #### BIG LOOP ENDS HERE ##############################################################################################
 
