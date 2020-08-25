@@ -22,7 +22,7 @@ band_pages <- as.character(
                            c(
                              "https://www.lyrics.com/artist.php?name=Manowar&aid=13602&o=1",          # 1 MANOWAR     
                              "https://www.lyrics.com/artist.php?name=ABBA&aid=3492&o=1",              # 2 ABBA
-                             "https://www.lyrics.com/artist.php?name=Metallica&aid=4906&o=1",         # 3 METALLICA
+                             "https://www.lyrics.com/artist.php?name=Iron-Maiden&aid=4560&o=1",         # 3 IRON MAIDEN
                              "https://www.lyrics.com/artist.php?name=AC%2FDC&aid=3496&o=1",           # 4 AC/DC
                              "https://www.lyrics.com/artist.php?name=Michael-Jackson&aid=4576&o=1",   # 5 MICHAEL JACKSON
                              "https://www.lyrics.com/artist.php?name=The-Beatles&aid=3644&o=1",       # 6 Beatles
@@ -38,11 +38,11 @@ band_pages <- as.character(
                              )
                           ) 
 
-# unwanted punctuations (keeps the apostrophe >> ' << and asterisk >> * << ). Used later to 
+# unwanted punctuations in LYRICS (keeps the apostrophe >> ' << and asterisk >> * << ). Used later to 
 unwanted_punct <- "[\\.|,|\\?|\\!|\"|\\[|\\]|\\(|\\)|#|$]" 
 
 #### BIG LOOP STARTS HERE ##############################################################################################
-for (p in 15:15) {
+for (p in 1:5) {
 
 start_loop <- Sys.time()
   
@@ -56,8 +56,8 @@ songs_table2 <- songs_table %>%
                 mutate(Song = str_to_lower(Song),
                        Song = str_squish(Song),
                        Album = str_to_lower(Album)) %>%
-                filter( !(str_detect(Song, "live|remix|version|dvd|radio edit|radio edition|remastered|medley|take [:digit:]|intro|outro|demo|\\[") | # remove live, remix, dvd songs and albums
-                          str_detect(Album, "live|best of|essential|essentials|greatest|hits|dvd|definitive|remastered|anthology|box set|vol. [:digit:]|collection|\\["))                    # remove live, best of, etc. albums
+                filter( !(str_detect(Song, "live|remix|version|dvd|radio edit|edition|remastered|medley|take [:digit:]|intro|outro|demo|\\[") | # remove live, remix, dvd songs and albums
+                          str_detect(Album, "live|best of|essential|essentials|unknown album|edition|greatest|hits|dvd|definitive|remastered|anthology|box set|vol. [:digit:]|collection|\\["))                    # remove live, best of, etc. albums
                       ) %>%
                 mutate(Band = Band,                                                         # define Band name (extracted)
                        Year = as.integer(str_extract(Album, pattern = "[:digit:]{4}$")),    # extract Year
@@ -113,14 +113,14 @@ for (i in 1:length(joined_table$full_url)) {
   raw_lyrics[i] <- html_text(html_node(lyrics_page, "pre"), trim = T) %>% 
                    str_replace_all("\n", " ") %>%         # replaces html tags such as \n 
                    str_remove_all(unwanted_punct) %>%     # remove punctuations
-                   str_squish() %>%                         # remove excess white space 
+                   str_squish() %>%                       # remove excess white space 
                    str_to_lower()                         # to lower case character
                    
   print(paste0(Band, " songs downloaded: ", i, " of ", total_number_of_songs)) # loop tracker
   
   }
 
-                ########## TAKES A WHILE !!!!! #############################################################################
+                 ########## TAKES A WHILE !!!!! #############################################################################
 
 
 joined_table2 <- joined_table %>% mutate(Lyrics = raw_lyrics) %>%                                      # add raw_lyrics as column to joined_table 
@@ -128,10 +128,10 @@ joined_table2 <- joined_table %>% mutate(Lyrics = raw_lyrics) %>%               
                                   arrange(Song, Duration, Year)                                        # arrange by ... 
 
 duplicates <- which(duplicated(joined_table2$Lyrics)) # detect duplicates
-band_table <- joined_table2[-duplicates, ] # remove dublicated lyrics. Problems with other version having some kind
-                                           # of intro deviating from the original one (e.g. Michael Jackson)
+band_table <- joined_table2[-duplicates, ]            # remove dublicated lyrics. Problems with other version having some kind
+                                                      # of intro deviating from the original one (e.g. Michael Jackson)
 
-FLL[[p]] <- band_table             ## move band_table df to FLL list (according to iterative indice)
+FLL[[p]] <- band_table                                ## move band_table df to FLL list (according to iterative indice)
 names(FLL)[p] <- Band
 
 end_loop <- Sys.time()
@@ -152,7 +152,6 @@ print(paste0("__________________________[ All Lyrics downloaded in... ", ms(roun
 extended_english_stopwords <- read_csv(file = "extended_stopwords.csv", trim_ws = TRUE) %>% pull()  
 
 
-
 clouds <- list()
 
 for (w in 1:length(FLL)) {
@@ -160,7 +159,7 @@ for (w in 1:length(FLL)) {
       lyrics_flattened <- str_flatten(FLL[[w]]$Lyrics)                           # merge all song lyrics into one character entry
       lyrics_corpus <- VCorpus(VectorSource(lyrics_flattened))                   # create a corpus (required for further functions)
       lyrics_cleaned <- tm_map(lyrics_corpus, removeWords, extended_english_stopwords) #remove stopwords
-      #lyrics_stemmed <- tm_map(lyrics_cleaned, stemDocument, language ="english")
+      #lyrics_stemmed <- tm_map(lyrics_cleaned, stemDocument, language ="english") # doesn't work properly (cuts off last letters and converts, for some words, plurals into singular incorrectly)
       
       word_matrix <- as.matrix(TermDocumentMatrix(lyrics_cleaned))               # create matrix with frequencies of every word
       word_matrix_sorted <- sort(rowSums(word_matrix), decreasing = T)           # sort words by their frequencies
