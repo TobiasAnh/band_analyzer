@@ -176,5 +176,3 @@ for (w in 1:length(FLL)) {
       }
 
 
-# all words with ' are not involved) - still the case? 
-

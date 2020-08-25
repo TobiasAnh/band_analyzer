@@ -1,6 +1,17 @@
+library(tidyverse)
+library(httr)
+library(rvest)
+library(lubridate)
+library(xml2)
+library(xslt)
+library(tm)
+library(qdapRegex)
+library(SnowballC)
+library(RColorBrewer)
+library(wordcloud2)
+library(shiny)
 library(ggridges)
-library(ggplot2)
-
+library(ggpubr)
 
 #### Estimating band metrics including median song duration, song count and ...
 #### ... type/token ratio (standardized for the first 10k words, otherwise it's biased!)
@@ -31,24 +42,49 @@ metrics <- tibble(Band = names(clouds), song_count, median_duration, sd_duration
                   sd_duration = round(seconds_to_period(sd_duration))) %>%
            arrange(desc(TTR_10k))
 
-plot_song_count <- metrics %>% ggplot(aes(fct_reorder(Band,song_count), song_count)) + 
-                                      geom_col(fill = "darkgreen", alpha = 0.7) + 
-                                      labs(title = "Total number of songs",
-                                           y = "count",
-                                           x = element_blank()) +
-                                      coord_flip() + 
-                                      theme_classic()
 
+# Plot song counts #############
+plot_song_count <- metrics %>% ggplot(aes(fct_reorder(Band, song_count), song_count, label = song_count)) + 
+                                geom_col(fill = "darkgreen", alpha = 0.5, width = 0.7) +
+                                geom_text(nudge_y = -32, nudge_x = 0.05) + 
+                                labs(title = "Total number of songs",
+                                     y = element_blank(),
+                                     x = element_blank()) +
+                                coord_flip() + 
+                                theme_classic() +
+                                theme(panel.grid = element_blank(),
+                                      axis.line.y = element_blank(),
+                                      axis.line.x = element_blank(),
+                                      axis.ticks.y = element_blank(),
+                                      axis.ticks.x = element_blank(),
+                                      axis.text.y = element_text(size = 12),
+                                      axis.text.x = element_blank()) 
+
+
+
+
+
+##############
 
 # TTR_10k Plot 
-plot_ttr <- metrics %>% ggplot(aes(fct_reorder(Band,TTR_10k), TTR_10k)) + 
-                        geom_col(fill = "steelblue") + 
+
+plot_ttr <- metrics %>% ggplot(aes(fct_reorder(Band,TTR_10k), TTR_10k, label = round(TTR_10k, 2))) + 
+                        geom_col(fill = "steelblue", alpha = 0.5, width = 0.5) +
+                        geom_text(nudge_y = 0.011) + 
                         labs(title = "Type/Token ratio (TTR) of each band",
                              subtitle = "Number of unique words within the total amount of all words",
-                             y = "TTR (standardized to 10,000 tokens)",
+                             y = "TTR (standardized to the first 10,000 tokens)",
                              x = element_blank()) +
                         coord_flip() + 
-                        theme_classic()
+                        theme_classic() +
+                        theme(panel.grid = element_blank(),
+                              axis.line.y = element_blank(),
+                              axis.line.x = element_blank(),
+                              axis.ticks.y = element_blank(),
+                              axis.ticks.x = element_blank(),
+                              axis.text.y = element_blank(),
+                              axis.text.x = element_blank()) + 
+                        geom_label(aes(fct_reorder(Band,TTR_10k), TTR_10k, label = Band), alpha = 0.95, nudge_y = -0.035)
 
 
 #### Creating data.frame with song durations 
@@ -72,12 +108,17 @@ durations_arranged <- all_durations_tbl %>%
   
   
 plot_duration <- ggplot(durations_arranged, aes(Duration, Band)) +                           # plot song durations vs. Band
-                         geom_density_ridges(na.rm = TRUE, alpha = 0.4, fill = "red") +       # density ridges with alpha
-                         theme_classic() +                                                   # theme 
+                         geom_density_ridges(na.rm = TRUE, alpha = 0.4, fill = "red") +      # density ridges with alpha
+                         theme_classic() +
                          labs(title = "Distribution of song durations of each band",
                               subtitle = "displayed as ridged density plots in seconds",
                               y = element_blank(),
-                              x = "Durations in seconds")
+                              x = "Durations in seconds") +
+                         theme(panel.grid = element_blank(),
+                               axis.line.y = element_blank(),
+                               axis.ticks.y = element_blank(),
+                               axis.text.y = element_text(vjust = -0.2, size = 12)) +
+                         scale_x_continuous(limits = c(0,1200), breaks = seq(from = 0, to = 60*20, by = 120))
 
 
 plot_list <- list(plot_song_count, plot_ttr, plot_duration)

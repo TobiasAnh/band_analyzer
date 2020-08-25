@@ -1,13 +1,24 @@
-library(shiny)
+library(tidyverse)
+library(httr)
+library(rvest)
+library(lubridate)
+library(xml2)
+library(xslt)
+library(tm)
+library(qdapRegex)
+library(SnowballC)
+library(RColorBrewer)
 library(wordcloud2)
+library(shiny)
+
 #### R shiny app #### 
-ui <- navbarPage("Band Analyzer",    
+ui <- navbarPage("Band Analyzer", fluid = FALSE,    
       
       # Tab 1 title #########################################################
-      tabPanel("Lyrics wordclouds",
+      tabPanel("Lyrics wordclouds", 
       
       # Sidebar
-      sidebarLayout(      
+      sidebarLayout(   
         
         # Define the sidebar with inputs (2 Bands are choosable)
         sidebarPanel(selectInput("band1", "Compare ...", 
@@ -16,7 +27,7 @@ ui <- navbarPage("Band Analyzer",
           
                      selectInput("band2", "with ...", 
                                  choices= names(FLL), 
-                                 selected = NA),
+                                 selected = "AC/DC"),
           
           #horizontal line
           hr(),
@@ -27,16 +38,23 @@ ui <- navbarPage("Band Analyzer",
                    Lyrics have not been 'stemmed' due to erroneous results"),
           
           hr(),
-        ),
+          
+          helpText("Source codes available ",
+                   tags$a(href="https://github.com/TobiasAnh/band_analyzer", "here.")),
+          
+          width = 3 
+          
+          ),
         
         # Create wordclouds 1 and 2
         mainPanel(
           wordcloud2Output("wordcloud_1"),
           hr(),
-          wordcloud2Output("wordcloud_2")
+          wordcloud2Output("wordcloud_2"),
+          width = 6)
                  )
         
-                 ) 
+                  
                  # sidebar 1 closes
                ),
                # tab 1 closes#
@@ -54,15 +72,16 @@ ui <- navbarPage("Band Analyzer",
                                hr(),
                                
                                helpText("Source: ",
-                                        tags$a(href="https://www.lyrics.com/", "Lyrics.com"))
-                  ),
+                                        tags$a(href="https://www.lyrics.com/", "Lyrics.com")),
+                               width = 3
+                              ),
                   
                   # Create a spot for the barplot
                   mainPanel(
-                    plotOutput("metric_plot")
-                  )
+                    plotOutput("metric_plot"), width = 6)
+                   
                   
-                )
+                             )
                 
                 
                 
@@ -84,7 +103,8 @@ server <- function(input, output, session) {
                               wordcloud2(color = "random-dark", 
                                          fontFamily = "Calibri",
                                          #shape = "star",
-                                         ellipticity = 0.2)
+                                         ellipticity = 0.3,
+                                         size = 1.5)
   })
   
   
@@ -95,7 +115,8 @@ server <- function(input, output, session) {
                               wordcloud2(color = "random-dark", 
                                          fontFamily = "Calibri",
                                          #shape = "star",
-                                         ellipticity = 0.2)
+                                         ellipticity = 0.3,
+                                         size = 1.5)
   })
   
   # render metric plot 
