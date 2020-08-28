@@ -40,7 +40,7 @@ for (t in 1:length(FLL)) {    # band iteration
 metrics <- tibble(Band = names(clouds), song_count, median_duration, sd_duration, word_type, TTR_10k) %>% 
            mutate(median_duration = round(seconds_to_period(median_duration)),
                   sd_duration = round(seconds_to_period(sd_duration))) %>%
-           arrange(desc(TTR_10k))
+           arrange(desc(song_count))
 
 
 # Plot song counts #############

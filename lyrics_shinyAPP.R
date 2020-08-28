@@ -12,7 +12,7 @@ library(wordcloud2)
 library(shiny)
 
 #### R shiny app #### 
-ui <- navbarPage("Band Analyzer", fluid = FALSE,    
+ui <- navbarPage("Band Analyzer", fluid = F,    
       
       # Tab 1 title #########################################################
       tabPanel("Lyrics wordclouds", 
@@ -23,11 +23,14 @@ ui <- navbarPage("Band Analyzer", fluid = FALSE,
         # Define the sidebar with inputs (2 Bands are choosable)
         sidebarPanel(selectInput("band1", "Compare ...", 
                                  choices= names(FLL), 
-                                 selected = "Elvis Presley"), 
+                                 selected = "Elvis Presley"),
+                     
+                     hr(),
           
                      selectInput("band2", "with ...", 
                                  choices= names(FLL), 
                                  selected = "AC/DC"),
+                     
           
           #horizontal line
           hr(),
@@ -42,16 +45,32 @@ ui <- navbarPage("Band Analyzer", fluid = FALSE,
           helpText("Source codes available ",
                    tags$a(href="https://github.com/TobiasAnh/band_analyzer", "here.")),
           
-          width = 3 
+          width = 4 
           
           ),
         
         # Create wordclouds 1 and 2
-        mainPanel(
+        mainPanel(column(10, align="center",
           wordcloud2Output("wordcloud_1"),
+          
+          sliderInput("maxwords1", 
+                      "Max. words",
+                      min = 100,
+                      max = 2000,
+                      value = 500,
+                      step = 100),
+          
           hr(),
           wordcloud2Output("wordcloud_2"),
-          width = 6)
+          
+          sliderInput("maxwords2", 
+                      "Max. words",
+                      min = 100,
+                      max = 2000,
+                      value = 500,
+                      step = 100)),
+          
+          width = 8)
                  )
         
                   
@@ -82,13 +101,7 @@ ui <- navbarPage("Band Analyzer", fluid = FALSE,
                    
                   
                              )
-                
-                
-                
-                
-                
-                
-                
+            
                 )
 )
 
@@ -99,24 +112,24 @@ server <- function(input, output, session) {
   # render wordcloud ONE with 'wordcloud2' using 'band1'
   output$wordcloud_1 <- renderWordcloud2({
     
-    clouds[[input$band1]] %>% top_n(500) %>%                              # using only 500 most common words
+    clouds[[input$band1]] %>% top_n(input$maxwords1) %>%                              
                               wordcloud2(color = "random-dark", 
                                          fontFamily = "Calibri",
                                          #shape = "star",
-                                         ellipticity = 0.3,
-                                         size = 1.5)
+                                         ellipticity = 0.8,
+                                         size = 0.8)
   })
   
   
   # render wordcloud TWO with 'wordcloud2' using 'band2'
   output$wordcloud_2 <- renderWordcloud2({
     
-    clouds[[input$band2]] %>% top_n(500) %>%                              # using only 500 most common words
+    clouds[[input$band2]] %>% top_n(input$maxwords2) %>%                              
                               wordcloud2(color = "random-dark", 
                                          fontFamily = "Calibri",
                                          #shape = "star",
-                                         ellipticity = 0.3,
-                                         size = 1.5)
+                                         ellipticity = 0.8,
+                                         size = 0.8)
   })
   
   # render metric plot 

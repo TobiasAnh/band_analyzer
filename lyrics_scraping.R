@@ -22,7 +22,7 @@ band_pages <- as.character(
                            c(
                              "https://www.lyrics.com/artist.php?name=Manowar&aid=13602&o=1",          # 1 MANOWAR     
                              "https://www.lyrics.com/artist.php?name=ABBA&aid=3492&o=1",              # 2 ABBA
-                             "https://www.lyrics.com/artist.php?name=Iron-Maiden&aid=4560&o=1",         # 3 IRON MAIDEN
+                             "https://www.lyrics.com/artist.php?name=Iron-Maiden&aid=4560&o=1",       # 3 IRON MAIDEN
                              "https://www.lyrics.com/artist.php?name=AC%2FDC&aid=3496&o=1",           # 4 AC/DC
                              "https://www.lyrics.com/artist.php?name=Michael-Jackson&aid=4576&o=1",   # 5 MICHAEL JACKSON
                              "https://www.lyrics.com/artist.php?name=The-Beatles&aid=3644&o=1",       # 6 Beatles
@@ -34,7 +34,9 @@ band_pages <- as.character(
                              "https://www.lyrics.com/artist.php?name=Queen&aid=5205&o=1",             # 12 Queen
                              "https://www.lyrics.com/artist.php?name=Nirvana&aid=5034&o=1",           # 13 Nirvana
                              "https://www.lyrics.com/artist.php?name=B.B.-King&aid=93923&o=1",        # 14 BB King
-                             "https://www.lyrics.com/artist.php?name=Lady-Gaga&aid=1055684&o=1"       # 15 Lady Gaga
+                             "https://www.lyrics.com/artist.php?name=Lady-Gaga&aid=1055684&o=1",       # 15 Lady Gaga
+                             "https://www.lyrics.com/artist.php?name=Neil-Young&aid=5896&o=1",         # 16 Neil Young
+                             "https://www.lyrics.com/artist.php?name=Depeche-Mode&aid=4071&o=1"       #17 Depeche Mode
                              )
                           ) 
 
@@ -42,7 +44,7 @@ band_pages <- as.character(
 unwanted_punct <- "[\\.|,|\\?|\\!|\"|\\[|\\]|\\(|\\)|#|$]" 
 
 #### BIG LOOP STARTS HERE ##############################################################################################
-for (p in 1:5) {
+for (p in 1:length(band_pages)) {
 
 start_loop <- Sys.time()
   
@@ -168,11 +170,9 @@ for (w in 1:length(FLL)) {
                                    freq = word_matrix_sorted)
                         
       
-      word_matrix_df$word <- str_replace_all(word_matrix_df$word, "babi", "baby")#replace "babi" with "baby", stemming does not work here correctly
+      #word_matrix_df$word <- str_replace_all(word_matrix_df$word, "babi", "baby")  #replace "babi" with "baby", stemming does not work here correctly
       
-      clouds[[w]] <- word_matrix_df                                              # save each word_matrix_df in list "clouds"
+      clouds[[w]] <- word_matrix_df                                                 # save each word_matrix_df in list "clouds"
       names(clouds)[w] <- names(FLL)[w]
       print(paste0(names(clouds)[w], " done ... "))
       }
-
-
