@@ -1,0 +1,13 @@
+name: BandAnalysis
+title: BandAnalysis
+username:
+account: tobiasanh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2705181
+bundleId: 3567473
+url: https://tobiasanh.shinyapps.io/BandAnalysis/
+when: 1598627038.00991
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: AZlyrics_version.R|english_verbs.csv|extended_stopwords.csv|FLL.RData|LitLinguistComputing.pdf|Microsoft Office Excel-Arbeitsblatt (neu).xlsx
