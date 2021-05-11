@@ -1,12 +1,11 @@
-
-#above needs to be checked if needed 
-
 #i need packages below
 library(wordcloud2)
 library(ggcorrplot)
 library(dplyr)
+library(forcats)
 library(ggplot2)
 library(shiny)
+library(ggridges)
 
 #### R shiny app #### 
 ui <- navbarPage("Band Analyzer", fluid = F,    
