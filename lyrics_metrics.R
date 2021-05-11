@@ -73,7 +73,7 @@ plot_ttr <- metrics %>% ggplot(aes(fct_reorder(Band,TTR_10k), TTR_10k, label = r
                         geom_text(nudge_y = 0.011) + 
                         labs(title = "Type/Token ratio (TTR) of each band",
                              subtitle = "Number of unique words within the total amount of all words",
-                             y = "TTR (standardized to the first 10,000 tokens)",
+                             y = "TTR (standardized for the first 10,000 tokens)",
                              x = element_blank()) +
                         coord_flip() + 
                         theme_classic() +

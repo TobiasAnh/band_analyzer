@@ -34,8 +34,8 @@ band_pages <- as.character(
                              "https://www.lyrics.com/artist.php?name=Queen&aid=5205&o=1",             # 12 Queen
                              "https://www.lyrics.com/artist.php?name=Nirvana&aid=5034&o=1",           # 13 Nirvana
                              "https://www.lyrics.com/artist.php?name=B.B.-King&aid=93923&o=1",        # 14 BB King
-                             "https://www.lyrics.com/artist.php?name=Lady-Gaga&aid=1055684&o=1",       # 15 Lady Gaga
-                             "https://www.lyrics.com/artist.php?name=Neil-Young&aid=5896&o=1",         # 16 Neil Young
+                             "https://www.lyrics.com/artist.php?name=Lady-Gaga&aid=1055684&o=1",      # 15 Lady Gaga
+                             "https://www.lyrics.com/artist.php?name=Neil-Young&aid=5896&o=1",        # 16 Neil Young
                              "https://www.lyrics.com/artist.php?name=Depeche-Mode&aid=4071&o=1"       #17 Depeche Mode
                              )
                           ) 
@@ -59,7 +59,7 @@ songs_table2 <- songs_table %>%
                        Song = str_squish(Song),
                        Album = str_to_lower(Album)) %>%
                 filter( !(str_detect(Song, "live|remix|version|dvd|radio edit|edition|remastered|medley|take [:digit:]|intro|outro|demo|\\[") | # remove live, remix, dvd songs and albums
-                          str_detect(Album, "live|best of|essential|essentials|unknown album|edition|greatest|hits|dvd|definitive|remastered|anthology|box set|vol. [:digit:]|collection|\\["))                    # remove live, best of, etc. albums
+                          str_detect(Album, "live|best of|essential|essentials|unknown album|edition|greatest|hits|dvd|definitive|remastered|anthology|box set|vol. [:digit:]|collection|\\["))   # remove live, best of, etc. albums
                       ) %>%
                 mutate(Band = Band,                                                         # define Band name (extracted)
                        Year = as.integer(str_extract(Album, pattern = "[:digit:]{4}$")),    # extract Year
@@ -176,3 +176,8 @@ for (w in 1:length(FLL)) {
       names(clouds)[w] <- names(FLL)[w]
       print(paste0(names(clouds)[w], " done ... "))
       }
+
+
+nirvana_test <- FLL$Nirvana 
+beat_songs <- nirvana_test %>% filter(str_detect(Lyrics, "beat"))
+str_count(beat_songs$Lyrics[2], "beat")

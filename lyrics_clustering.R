@@ -1,0 +1,91 @@
+library(tidyverse)
+library(httr)
+library(rvest)
+library(lubridate)
+library(xml2)
+library(xslt)
+library(tm)
+library(qdapRegex)
+library(SnowballC)
+library(RColorBrewer)
+library(wordcloud2)
+library(shiny)
+library(ggridges)
+library(ggpubr)
+library(ggcorrplot)
+library(cluster)
+library(factoextra)
+library(corrplot)
+
+
+frequent_words <- 20             #define number of most frequent words
+data.frame() -> cloudsFW         #define df used in loop
+
+for (d in 1:length(clouds)) {
+ #move the words column (nested in the clouds) list of every band into a new df
+ cloudsFW[1:frequent_words,d] <- clouds[[d]][1:frequent_words,1]
+ 
+}
+
+names(cloudsFW) <- names(clouds)  #assign correct names to new df
+
+# calculating a dissimilarity matrix (proportion of matching words)
+diss_df <- data.frame()
+
+for (n in 1:length(cloudsFW)) {
+  # loops through every band
+  
+  for (m in 1:length(cloudsFW)) {
+  # loops through every band again
+  # calculates dissimilarity (proportion of matching words) among the bands
+  diss_df[m,n] <-  1 - mean(cloudsFW[,n] %in% cloudsFW[,m])  
+  }
+  
+}
+
+cloudsFW$Manowar
+
+
+names(diss_df) <- names(clouds)
+row.names(diss_df) <- names(clouds)
+
+similarity_matrix <- corrplot::corrplot(as.matrix(1-diss_df), 
+                                        type = "upper", 
+                                        is.corr = F, 
+                                        tl.col = "black", tl.cex = 0.8, cl.cex = 0.8, 
+                                        number.cex = 0.6, 
+                                        addgrid.col = "darkgray", 
+                                        diag = F, 
+                                        title = "Lyrics similarity among bands")
+
+ggcorrplot(corr = 1-diss_df, 
+           method = "circle", 
+           type = "full",
+           hc.method = TRUE,
+           title = "Lyrics similarity among bands", 
+           show.diag = TRUE, 
+           colors = c("white", "white", "red")) 
+
+### using hclust #### 
+
+dist_metrics <- dist(1-diss_df, diag = T)
+
+clustered <- hclust(dist_metrics, method = "complete")
+
+clusters <- 8
+k_color_palettes <- brewer.pal(clusters, "Accent")
+
+fviz_dend(clustered, 
+          main = "Band lyrics dendrogram",  #title
+          k = clusters,                     #predefined clusters
+          k_colors = "black",               #cluster colors
+          color_labels_by_k = T,                                         
+          rect = TRUE,                      #add rectangles
+          rect_border = k_color_palettes,  #rectangle colors
+          rect_fill = T,
+          ylab = "")
+
+
+
+
+

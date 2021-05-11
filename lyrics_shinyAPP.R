@@ -3,7 +3,7 @@ library(httr)
 library(rvest)
 library(lubridate)
 library(xml2)
-library(xslt)
+#library(xslt)
 library(tm)
 library(qdapRegex)
 library(SnowballC)
@@ -11,6 +11,9 @@ library(RColorBrewer)
 library(wordcloud2)
 library(shiny)
 
+install.packages("tidyverse", "httr", "rvest", "lubridate", "xml2", "tm", 
+                 "qdapRegex", "SnowballC", "RColorBrewer", "wordcloud2",
+                 "shiny")
 #### R shiny app #### 
 ui <- navbarPage("Band Analyzer", fluid = F,    
       
@@ -21,61 +24,46 @@ ui <- navbarPage("Band Analyzer", fluid = F,
       sidebarLayout(   
         
         # Define the sidebar with inputs (2 Bands are choosable)
-        sidebarPanel(selectInput("band1", "Compare ...", 
+        sidebarPanel(width = 4,
+                     selectInput("band1", "Choose band/artist", 
                                  choices= names(FLL), 
                                  selected = "Elvis Presley"),
                      
+                     #horizontal line
                      hr(),
-          
-                     selectInput("band2", "with ...", 
-                                 choices= names(FLL), 
-                                 selected = "AC/DC"),
                      
+                     helpText("Lyrics have been web-scraped automatically from ",
+                              tags$a(href="https://www.lyrics.com/", "Lyrics.com.",), "'Stopwords'
+                              (frequently used english words) have been removed from all lyrics. 
+                              "),
+                     
+                     hr(),
+                     
+                     helpText("Source codes available ", tags$a(href="https://github.com/TobiasAnh/band_analyzer", "here.")),
           
-          #horizontal line
-          hr(),
+           
           
-          helpText("Some notes: Lyrics have been scraped automatically from ",
-                   tags$a(href="https://www.lyrics.com/", "Lyrics.com.",), "'Stopwords'
-                   (frequently used english words) have been removed from all lyrics. 
-                   Lyrics have not been 'stemmed' due to erroneous results"),
-          
-          hr(),
-          
-          helpText("Source codes available ",
-                   tags$a(href="https://github.com/TobiasAnh/band_analyzer", "here.")),
-          
-          width = 4 
-          
-          ),
+                    ),
         
-        # Create wordclouds 1 and 2
-        mainPanel(column(10, align="center",
-          wordcloud2Output("wordcloud_1"),
-          
-          sliderInput("maxwords1", 
-                      "Max. words",
-                      min = 100,
-                      max = 2000,
-                      value = 500,
-                      step = 100),
-          
-          hr(),
-          wordcloud2Output("wordcloud_2"),
-          
-          sliderInput("maxwords2", 
-                      "Max. words",
-                      min = 100,
-                      max = 2000,
-                      value = 500,
-                      step = 100)),
-          
-          width = 8)
-                 )
+        # Create wordcloud and similarity matrix
+        mainPanel(column(align="center", width = 8,
+                         wordcloud2Output("wordcloud_1"),
+                  
+                         sliderInput("maxwords1", 
+                                    "Max. words",
+                                    min = 50,
+                                    max = 500,
+                                    value = 100,
+                                    step = 50),
+                        
+                         hr(),
+                         plotOutput("similarity_matrix"),
+                        )
+                  )
         
                   
                  # sidebar 1 closes
-               ),
+               )),
                # tab 1 closes#
        tabPanel("Band metrics", # tab 2 opens
                 
@@ -96,11 +84,11 @@ ui <- navbarPage("Band Analyzer", fluid = F,
                               ),
                   
                   # Create a spot for the barplot
-                  mainPanel(
-                    plotOutput("metric_plot"), width = 6)
+                  mainPanel(width = 6,
+                            plotOutput("metric_plot"))
                    
                   
-                             )
+                           )
             
                 )
 )
@@ -121,15 +109,15 @@ server <- function(input, output, session) {
   })
   
   
-  # render wordcloud TWO with 'wordcloud2' using 'band2'
-  output$wordcloud_2 <- renderWordcloud2({
+  # render similarity matrix plot
+  output$similarity_matrix <- renderPlot({
     
-    clouds[[input$band2]] %>% top_n(input$maxwords2) %>%                              
-                              wordcloud2(color = "random-dark", 
-                                         fontFamily = "Calibri",
-                                         #shape = "star",
-                                         ellipticity = 0.8,
-                                         size = 0.8)
+    ggcorrplot(corr = 1-diss_df, 
+               method = "circle", 
+               #type = "lower", 
+               title = "Lyrics similarity among bands", 
+               show.diag = T, tl.srt = 90, ) + 
+      scale_fill_gradient2(limit = c(0,0.9), low = "white", high = "darkgreen")
   })
   
   # render metric plot 
