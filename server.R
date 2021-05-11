@@ -27,4 +27,4 @@ server <- function(input, output, session) {
   output$metric_plot <- renderPlot({ plot_list[[input$metric]]  })
 }
 
-shinyApp(ui, server)
+#shinyApp(ui, server)

@@ -1,15 +1,11 @@
-library(dyplr)
-library(ggplot2)
-library(httr)
-library(rvest)
-library(lubridate)
-library(xml2)
-#library(xslt)
-library(tm)
-library(qdapRegex)
-library(SnowballC)
-library(RColorBrewer)
+
+#above needs to be checked if needed 
+
+#i need packages below
 library(wordcloud2)
+library(ggcorrplot)
+library(dplyr)
+library(ggplot2)
 library(shiny)
 
 #### R shiny app #### 

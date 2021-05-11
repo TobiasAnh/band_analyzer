@@ -1,4 +1,5 @@
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(httr)
 library(rvest)
 library(lubridate)
@@ -8,7 +9,7 @@ library(tm)
 library(qdapRegex)
 library(SnowballC)
 library(RColorBrewer)
-library(wordcloud2)
+library(shiny)
 
 # Import all Song-URLs + Bandname, Title, Duration and Album ----------------------------------------------------
 
