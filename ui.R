@@ -1,4 +1,5 @@
-library(tidyverse)
+library(dyplr)
+library(ggplot2)
 library(httr)
 library(rvest)
 library(lubridate)
