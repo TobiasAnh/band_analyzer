@@ -5,3 +5,4 @@ AZlyrics_version.R
 unrequired_files/
 FLL.RData
 *.csv
+rsconnect/
