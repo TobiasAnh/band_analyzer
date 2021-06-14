@@ -71,7 +71,7 @@ ggcorrplot(corr = 1-diss_df,
 dist_metrics <- dist(1-diss_df, diag = T)
 
 clustered <- hclust(dist_metrics, method = "complete")
-
+plot(clustered)
 clusters <- 8
 k_color_palettes <- brewer.pal(clusters, "Accent")
 

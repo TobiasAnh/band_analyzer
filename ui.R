@@ -1,4 +1,4 @@
-#i need packages below
+
 library(wordcloud2)
 library(ggcorrplot)
 library(dplyr)
