@@ -1,3 +1,4 @@
 *.Rproj
 unrequired_files/
 *.csv
+.Rproj.user/*
