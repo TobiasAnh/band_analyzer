@@ -5,13 +5,14 @@ library(dplyr)
 library(forcats)
 library(ggplot2)
 library(shiny)
+library(shinythemes)
 library(ggridges)
 
 #### R shiny app #### 
-ui <- navbarPage("Band Analyzer", fluid = F,    
+ui <- navbarPage("Band Analyzer", fluid = F, theme = shinytheme("flatly"),  
       
       # Tab 1 title #########################################################
-      tabPanel("Lyrics wordclouds", 
+      tabPanel("Lyrics wordclouds", icon= icon("microphone-alt"),
       
       # Sidebar
       sidebarLayout(   
@@ -58,7 +59,7 @@ ui <- navbarPage("Band Analyzer", fluid = F,
                  # sidebar 1 closes
                )),
                # tab 1 closes#
-       tabPanel("Band metrics", # tab 2 opens
+       tabPanel("Band metrics", icon= icon("sliders-h"),# tab 2 opens
                 
                 # Sidebar tab 2
                 sidebarLayout(      
