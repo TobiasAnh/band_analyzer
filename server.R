@@ -15,13 +15,31 @@ server <- function(input, output, session) {
   # render similarity matrix plot
   output$similarity_matrix <- renderPlot({
     
-    ggcorrplot(corr = 1-diss_df, 
-               method = "circle", 
-               #type = "lower", 
-               title = "Lyrics similarity among bands", 
-               show.diag = T, tl.srt = 90, ) + 
-      scale_fill_gradient2(limit = c(0,0.9), low = "white", high = "darkgreen")
+    corrplot::corrplot(as.matrix(1-diss_df), 
+                       type = "upper", 
+                       is.corr = F, 
+                       tl.col = "black", tl.cex = 0.8, cl.cex = 0.8, 
+                       number.cex = 0.6, 
+                       addgrid.col = "darkgray", 
+                       diag = F, 
+                       title = element_blank())
   })
+  
+  output$lyrics_hclust <- renderPlot({
+    
+    factoextra::fviz_dend(clustered,
+                          type = input$vis_type,
+                          main = "Band lyrics dendrogram",  #title
+                          k = clusters,                     #predefined clusters
+                          k_colors = "black",               #cluster colors
+                          color_labels_by_k = T,                                         
+                          rect = TRUE,                      #add rectangles
+                          rect_border = k_color_palettes,  #rectangle colors
+                          rect_fill = T,
+                          ylab = "")
+    
+  })
+  
   
   # render metric plot 
   output$metric_plot <- renderPlot({ plot_list[[input$metric]]  })

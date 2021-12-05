@@ -17,7 +17,7 @@ ui <- navbarPage("Band Analyzer", fluid = F, theme = shinytheme("flatly"),
       # Sidebar
       sidebarLayout(   
         
-        # Define the sidebar with inputs (2 Bands are choosable)
+        # Define the sidebar with inputs (1 Band is choosable)
         sidebarPanel(width = 4,
                      selectInput("band1", "Choose band/artist", 
                                  choices= names(FLL), 
@@ -27,13 +27,13 @@ ui <- navbarPage("Band Analyzer", fluid = F, theme = shinytheme("flatly"),
                      hr(),
                      
                      helpText("Lyrics have been web-scraped automatically from ",
-                              tags$a(href="https://www.lyrics.com/", "Lyrics.com.",), "'Stopwords'
+                              tags$a(href="https://www.lyrics.com/", "Lyrics.com."), "'Stopwords'
                               (frequently used english words) have been removed from all lyrics. 
                               "),
                      
                      hr(),
                      
-                     helpText("Source codes available ", tags$a(href="https://github.com/TobiasAnh/band_analyzer", "here.")),
+                     helpText("Source codes available ", tags$a(href="https://github.com/TobiasAnh/band_analyzer", "here."))
           
            
           
@@ -44,24 +44,55 @@ ui <- navbarPage("Band Analyzer", fluid = F, theme = shinytheme("flatly"),
                          wordcloud2Output("wordcloud_1"),
                   
                          sliderInput("maxwords1", 
-                                    "Max. words",
-                                    min = 50,
-                                    max = 500,
-                                    value = 100,
-                                    step = 50),
+                                     "Max. words",
+                                     min = 50,
+                                     max = 500,
+                                     value = 100,
+                                     step = 50),
                         
-                         hr(),
-                         plotOutput("similarity_matrix"),
-                        )
+                         hr())
                   )
-        
-                  
-                 # sidebar 1 closes
+               # sidebar 1 closes
                )),
                # tab 1 closes#
-       tabPanel("Band metrics", icon= icon("sliders-h"),# tab 2 opens
+       
+      tabPanel("Lyrics clustering", icon= icon("project-diagram"),# tab 2 opens
+               
+               # Sidebar tab 2
+               sidebarLayout(      
+                 
+                 # Define the sidebar input (2 Bands are choosable)
+                 sidebarPanel(radioButtons("vis_type", "Choose visualization:", 
+                                           selected = "phylogenic",
+                                           choiceNames = c("rectangle", "circular", "phylogenic"),
+                                           choiceValues = c("rectangle", "circular", "phylogenic")),
+                              #horizontal line
+                              hr(),
+                              
+                              helpText("Source: ",
+                                       tags$a(href="https://www.lyrics.com/", "Lyrics.com")),
+                              width = 3
+                 ),
+                 
+                 # Create a spot for the barplot
+                 mainPanel(width = 6,
+                           plotOutput("similarity_matrix"),
+                           
+                           hr(),
+                           
+                           plotOutput("lyrics_hclust")
+                           
+                          )
+                 
+                 
+               ),
+      ),
+      
+      
+      
+       tabPanel("Band metrics", icon= icon("sliders-h"),# tab 3 opens
                 
-                # Sidebar tab 2
+                # Sidebar tab 3
                 sidebarLayout(      
                   
                   # Define the sidebar input (2 Bands are choosable)
@@ -85,4 +116,8 @@ ui <- navbarPage("Band Analyzer", fluid = F, theme = shinytheme("flatly"),
                            )
             
                 )
-)
+      
+               
+      )
+      
+

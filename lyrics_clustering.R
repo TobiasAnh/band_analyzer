@@ -18,7 +18,7 @@ library(factoextra)
 library(corrplot)
 
 
-frequent_words <- 20             #define number of most frequent words
+frequent_words <- 50             #define number of most frequent words
 data.frame() -> cloudsFW         #define df used in loop
 
 for (d in 1:length(clouds)) {
@@ -72,18 +72,21 @@ dist_metrics <- dist(1-diss_df, diag = T)
 
 clustered <- hclust(dist_metrics, method = "complete")
 plot(clustered)
-clusters <- 8
+clusters <- 4
 k_color_palettes <- brewer.pal(clusters, "Accent")
 
-fviz_dend(clustered, 
-          main = "Band lyrics dendrogram",  #title
-          k = clusters,                     #predefined clusters
-          k_colors = "black",               #cluster colors
-          color_labels_by_k = T,                                         
-          rect = TRUE,                      #add rectangles
-          rect_border = k_color_palettes,  #rectangle colors
-          rect_fill = T,
-          ylab = "")
+
+
+factoextra::fviz_dend(clustered,
+                      type = "phylogenic",
+                      main = "Band lyrics dendrogram",  #title
+                      k = clusters,                     #predefined clusters
+                      k_colors = "black",               #cluster colors
+                      color_labels_by_k = T,                                         
+                      rect = TRUE,                      #add rectangles
+                      rect_border = k_color_palettes,  #rectangle colors
+                      rect_fill = T,
+                      ylab = "")
 
 
 
