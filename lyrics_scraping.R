@@ -64,7 +64,7 @@ songs_table2 <- songs_table %>%
                       ) %>%
                 mutate(Band = Band,                                                         # define Band name (extracted)
                        Year = as.integer(str_extract(Album, pattern = "[:digit:]{4}$")),    # extract Year
-                       Album = str_remove(Album, pattern = "[:digit:]{4}$"),                                           # KEY COLUMN: lower case letters
+                       Album = str_remove(Album, pattern = "[:digit:]{4}$"),                # KEY COLUMN: lower case letters
                        Song = str_remove_all(Song, pattern = "[:punct:]"),                  # KEY COLUMN: remove punctuation in Song name
                        Song = str_squish(Song),                                             # KEY COLUMN: remove excess whitespaces
                        Duration = ms(Duration, quiet = TRUE)) %>%                           # convert Duration
